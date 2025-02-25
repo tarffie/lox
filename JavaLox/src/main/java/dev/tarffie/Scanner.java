@@ -100,13 +100,14 @@ class Scanner {
       case '/':
         if (match('/')) {
           // A comment goes until the end of the line.
-          while (peek() != '\n' && !isAtEnd())
-            advance();
+          while (peek() != '\n' && !isAtEnd()) advance();
         } else if (match('*')) {
-          while (peek() != '*') {
-            advance();
-            if (match('/')) break;
+          while (!isAtEnd() && peek() != '*' && peekNext() != '/') advance();
+          if (isAtEnd() || peek() != '*' || peekNext() != '/') {
+            Lox.error(line, "UNFINISHED COMMENT");
           }
+          match('*');
+          match('/');
         } else {
           addToken(SLASH);
         }
@@ -152,8 +153,7 @@ class Scanner {
       while (isDigit(peek())) advance();
     }
 
-    addToken(NUMBER,
-      Double.parseDouble(source.substring(start, current)));
+    addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
   }
 
   private char peek() {
@@ -167,9 +167,7 @@ class Scanner {
   }
 
   private boolean isAlpha(char c) {
-    return (c >= 'a' && c <= 'z') ||
-      (c >= 'A' && c <= 'Z') ||
-      c == '_';
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
   }
 
   private boolean isAlphaNumeric(char c) {
