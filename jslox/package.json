@@ -1,0 +1,22 @@
+{
+  "name": "jslox",
+  "version": "1.0.0",
+  "description": "interpreted and java-like programming language ",
+  "main": "src/index.js",
+  "scripts": {
+    "lox": "node src/index.mjs",
+    "build": "tsc src/utils/* --outDir src/dist",
+    "clean": "rm -rvi src/dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "javascript",
+    "java"
+  ],
+  "author": "Emilia \"yoru\" Alves",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "3.5.3",
+    "typescript": "^5.8.3"
+  }
+}
