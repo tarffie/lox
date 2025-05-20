@@ -1,22 +1,42 @@
 {
   "name": "jslox",
   "version": "1.0.0",
-  "description": "interpreted and java-like programming language ",
-  "main": "src/index.js",
+  "description": "interpreted and java-like programming language",
+  "main": "dist/index.js",
+  "type": "module",
   "scripts": {
-    "lox": "node src/index.mjs",
-    "build": "tsc src/utils/* --outDir src/dist",
-    "clean": "rm -rvi src/dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/index.js",
+    "lox": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "build": "esbuild src/index.ts --bundle --outdir=dist --format=esm --platform=node --external:readline/promises --external:fs/promises",
+    "clean": "rm -rf dist/",
+    "watch": "tsc --watch",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "jest"
+  },
+  "imports": {
+    "@/*": "./dist/*.js"
   },
   "keywords": [
+    "typescript",
     "javascript",
-    "java"
+    "Crafting Interpreters",
+    "Compilers",
+    "Transpiler"
   ],
-  "author": "Emilia \"yoru\" Alves",
+  "author": "Emilia Alves",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "esbuild": "^0.25.4",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
     "prettier": "3.5.3",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
 }
