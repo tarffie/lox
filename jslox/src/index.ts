@@ -4,12 +4,18 @@ import readline from "readline/promises";
 import { Lexer } from "./lexer";
 import { LoxError } from "./LoxError";
 
-let lineNumber = 0;
+let lineNumber = 1;
 
 async function runFile(filePath: string | undefined): Promise<void> {
   if (!filePath) throw new Error("Could not retrieve file");
-  const input = await readFile(filePath!, "utf8");
-  run(input);
+
+  try {
+    const input = await readFile(filePath!, "utf8");
+    run(input);
+  } catch (e) {
+    const { message } = e as Error;
+    console.error(message);
+  }
 }
 
 function run(source: string) {
@@ -38,15 +44,16 @@ async function runPrompt() {
 
     rl.close();
   } catch (e) {
-    const error = e as Error;
+    const { message } = e as LoxError;
     const reportedLine = lineNumber;
-    throw new LoxError(reportedLine, error.message);
+    console.error(message, reportedLine);
   }
 }
 
 /**
- * @param {Array<string>} args
+ * @param {string[]} args
  */
+
 async function lox(args: string[]) {
   if (args.length > 3) {
     console.log("Usage: jslox [script]");
@@ -58,5 +65,5 @@ async function lox(args: string[]) {
 }
 
 (async () => {
-  await lox(process.argv);
-})()
+  lox(process.argv);
+})();

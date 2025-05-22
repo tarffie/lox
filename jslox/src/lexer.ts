@@ -3,7 +3,7 @@ import { createToken, Token } from "./token";
 import { TokenType } from "./utils/tokenType";
 
 interface Keywords {
-  [key:string]: TokenType;
+  [key: string]: TokenType;
 }
 
 /**
@@ -18,7 +18,7 @@ class Lexer {
   private tokens = new Array<Token>();
   private cursor = 0;
   private offset = 0;
-  private line = 1;
+  public line = 1;
 
   private readonly keywords: Keywords = {
     and: TokenType.AND,
@@ -77,7 +77,7 @@ class Lexer {
    * @param {string} expected Expected char we wanted
    * @returns {boolean} returns if it is expected char or not
    */
-	private match(expected: string): boolean {
+  private match(expected: string): boolean {
     if (this.isAtEnd()) return false;
     if (this.source.at(this.cursor) != expected) return false;
 
@@ -89,9 +89,12 @@ class Lexer {
    * @param {TokenType} type type of the token we're adding
    * @param {Object} literal literal value of the token if there is one
    */
-  private addToken(type: TokenType, literal?: number|string|undefined|null) {
+  private addToken(
+    type: TokenType,
+    literal?: number | string | undefined | null,
+  ) {
     let lexeme = this.source.slice(this.offset, this.cursor);
-		if (!literal) literal = null;
+    if (!literal) literal = null;
     this.tokens.push(createToken(type, lexeme, literal, this.line));
   }
 
@@ -99,8 +102,8 @@ class Lexer {
    * Check if char under cursor is a digit
    * @param {string} c char under cursor
    */
-  private isDigit(c: string|undefined): boolean {
-    if (c) { 
+  private isDigit(c: string | undefined): boolean {
+    if (c) {
       return c >= "0" && c <= "9";
     }
     return false;
@@ -133,13 +136,13 @@ class Lexer {
     }
 
     if (this.isAtEnd()) {
-      return new LoxError(this.line, "Unterminated string");
+      return new LoxError(this.line, `Unterminated string`);
     }
 
     this.advance();
 
-    const value = this.source.slice(this.offset + 1, this.cursor - 1);
-    this.addToken(TokenType.STRING, value);
+    const literal = this.source.slice(this.offset + 1, this.cursor - 1);
+    this.addToken(TokenType.STRING, literal);
   }
 
   /**
@@ -182,9 +185,7 @@ class Lexer {
         this.string();
         break;
       case "!":
-        this.addToken(
-          this.match("=") ? TokenType.BANG_EQUAL : TokenType.BANG,
-        );
+        this.addToken(this.match("=") ? TokenType.BANG_EQUAL : TokenType.BANG);
         break;
       case "=":
         this.addToken(
@@ -192,9 +193,7 @@ class Lexer {
         );
         break;
       case "<":
-        this.addToken(
-          this.match("=") ? TokenType.LESS_EQUAL : TokenType.LESS,
-        );
+        this.addToken(this.match("=") ? TokenType.LESS_EQUAL : TokenType.LESS);
         break;
       case ">":
         this.addToken(
@@ -210,7 +209,11 @@ class Lexer {
         break;
       case "o":
         if (this.match("r")) {
-          this.addToken(TokenType.OR);
+          if (this.match(" ")) {
+            this.addToken(TokenType.OR);
+          } else {
+            this.indentifier();
+          }
         }
         break;
       case " ":
@@ -249,8 +252,8 @@ class Lexer {
    * @param {string} c char under cursor
    * @returns {boolean} returns if a char is alhpabetical
    */
-  private isAlpha(c: string|undefined) {
-    if(c) return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c == "_";
+  private isAlpha(c: string | undefined) {
+    if (c) return (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") || c == "_";
     return false;
   }
 
@@ -258,7 +261,7 @@ class Lexer {
    * @param {string} c char under cursor
    * @returns {boolean} returns if a char is alhpabetical or mathematical
    */
-  private isAlphaNumeric(c: string|undefined) {
+  private isAlphaNumeric(c: string | undefined) {
     if (c) return this.isAlpha(c) || this.isDigit(c);
     return false;
   }

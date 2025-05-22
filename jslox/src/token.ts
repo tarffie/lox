@@ -7,15 +7,15 @@ import { TokenType } from "./utils/tokenType";
  * @property {string} lexeme - The string representation of the token
  * @property {*} literal - The literal value (number, string, boolean, etc.)
  * @property {number} line - The source line where the token appears
- * @property {function(): string} toString - Returns string representation of the token
+ * @property {() => string} toString - Returns string representation of the token
  */
 
 type Token = { 
-    type: TokenType | string,
-    lexeme: string;
-    literal: number | string | undefined | null;
-    line: number;
-    toString: () => string;
+  type: TokenType | string,
+  lexeme: string;
+  literal: number | string | undefined | null;
+  line: number;
+  toString: () => string;
 }
 
 /**
